@@ -171,7 +171,9 @@ public class PushyApnsSender implements PushNotificationSender {
     }
 
     private PushType determinePushType(Message message) {
-        if (!isEmpty(message.getAlert()) || !isEmpty(message.getSound())) {
+        if(message.getUserData() != null && message.getUserData().containsKey("jingle")) {
+        	return PushType.VOIP;
+        }else if (!isEmpty(message.getAlert()) || !isEmpty(message.getSound())) {
             return PushType.ALERT;
         }
         return PushType.BACKGROUND;
