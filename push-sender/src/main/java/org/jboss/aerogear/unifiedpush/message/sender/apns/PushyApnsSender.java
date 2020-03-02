@@ -136,7 +136,7 @@ public class PushyApnsSender implements PushNotificationSender {
 
             tokens.forEach(token -> {
                 final SimpleApnsPushNotification pushNotification = new SimpleApnsPushNotification(token,
-                        defaultApnsTopic, payload, expireDate, DeliveryPriority.IMMEDIATE,
+                        determineApnsTopic(pushMessage.getMessage()), payload, expireDate, DeliveryPriority.IMMEDIATE,
                         determinePushType(pushMessage.getMessage()), null, null);
                 final Future<PushNotificationResponse<SimpleApnsPushNotification>> notificationSendFuture = apnsClient
                         .sendNotification(pushNotification);
@@ -177,6 +177,14 @@ public class PushyApnsSender implements PushNotificationSender {
             return PushType.ALERT;
         }
         return PushType.BACKGROUND;
+    }
+    
+    private String determineApnsTopic(Message message, String defaultApnsTopic) {
+    	if(message.getUserData() != null && message.getUserData().containsKey("jingle")) {
+        	return defaultApnsTopic+".voip";
+        }
+    	
+    	return defaultApnsTopic;
     }
 
     private boolean isEmpty(final CharSequence cs) {
