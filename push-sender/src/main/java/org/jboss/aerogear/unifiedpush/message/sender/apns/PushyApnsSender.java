@@ -136,7 +136,7 @@ public class PushyApnsSender implements PushNotificationSender {
 
             tokens.forEach(token -> {
                 final SimpleApnsPushNotification pushNotification = new SimpleApnsPushNotification(token,
-                        determineApnsTopic(pushMessage.getMessage()), payload, expireDate, DeliveryPriority.IMMEDIATE,
+                        determineApnsTopic(pushMessage.getMessage(), defaultApnsTopic), payload, expireDate, DeliveryPriority.IMMEDIATE,
                         determinePushType(pushMessage.getMessage()), null, null);
                 final Future<PushNotificationResponse<SimpleApnsPushNotification>> notificationSendFuture = apnsClient
                         .sendNotification(pushNotification);
