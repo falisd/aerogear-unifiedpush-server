@@ -132,11 +132,12 @@ public class PushyApnsSender implements PushNotificationSender {
             final String defaultApnsTopic = ApnsUtil.readDefaultTopic(iOSVariant.getCertificate(),
                     iOSVariant.getPassphrase().toCharArray());
             Date expireDate = createFutureDateBasedOnTTL(pushMessage.getConfig().getTimeToLive());
-            logger.debug("sending payload for all tokens for {} to APNs ({})", iOSVariant.getVariantID(), defaultApnsTopic);
+            String apnsTopic = determineApnsTopic(pushMessage.getMessage(), defaultApnsTopic);
+            logger.debug("sending payload for all tokens for {} to APNs ({})", iOSVariant.getVariantID(), apnsTopic);
 
             tokens.forEach(token -> {
                 final SimpleApnsPushNotification pushNotification = new SimpleApnsPushNotification(token,
-                        determineApnsTopic(pushMessage.getMessage(), defaultApnsTopic), payload, expireDate, DeliveryPriority.IMMEDIATE,
+                        apnsTopic, payload, expireDate, DeliveryPriority.IMMEDIATE,
                         determinePushType(pushMessage.getMessage()), null, null);
                 final Future<PushNotificationResponse<SimpleApnsPushNotification>> notificationSendFuture = apnsClient
                         .sendNotification(pushNotification);
