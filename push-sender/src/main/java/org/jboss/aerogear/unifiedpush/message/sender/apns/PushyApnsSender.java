@@ -63,6 +63,7 @@ public class PushyApnsSender implements PushNotificationSender {
 
     private static final Logger logger = LoggerFactory.getLogger(PushyApnsSender.class);
 
+    public static final String APNS_TOPIC_VOIP_SUFFIX = ".voip";
     public static final String CUSTOM_AEROGEAR_APNS_PUSH_HOST = "custom.aerogear.apns.push.host";
     public static final String CUSTOM_AEROGEAR_APNS_PUSH_PORT = "custom.aerogear.apns.push.port";
     private static final String customAerogearApnsPushHost = tryGetGlobalProperty(CUSTOM_AEROGEAR_APNS_PUSH_HOST);
@@ -182,7 +183,8 @@ public class PushyApnsSender implements PushNotificationSender {
     
     private String determineApnsTopic(Message message, String defaultApnsTopic) {
     	if(message.getUserData() != null && message.getUserData().containsKey("jingle")) {
-        	return defaultApnsTopic+".voip";
+        	return defaultApnsTopic.endsWith(APNS_TOPIC_VOIP_SUFFIX) 
+        			? defaultApnsTopic : defaultApnsTopic+APNS_TOPIC_VOIP_SUFFIX;
         }
     	
     	return defaultApnsTopic;
